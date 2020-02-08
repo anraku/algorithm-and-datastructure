@@ -5,36 +5,35 @@ int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(0);
 
+	stack<int> st1;
+	stack<pair<int, int>> st2;
 	string input;
 	cin >> input;
-
-	// 水溜まりの始点と終点を求める
-	int start;
-	int depth = 0;
-	vector<pair<int, int>> arr;
-	for (int i=0;i<input.size();i++){
+	int sum = 0;
+	for (int i=0; i<input.size();i++) {
 		if (input[i] == '\\') {
-			depth++;
-		} else if (input[i] == '/') {
-			depth--;
-		}
-		if (depth == 0) {
-			arr.push_back(pair<int, int>(start, i));
-			for (;i<input.size();i++){
-				if (input[i] == '\\'){
-					start = i;
-					i--;
-					break;
-				}
+			st1.push(i);
+		} else if (st1.size() > 0 && input[i] == '/') {
+			int j = st1.top(); st1.pop();
+			sum += i-j;
+			int a = i-j;	
+			while (st2.size() > 0 && st2.top().first > j) {
+				a += st2.top().second; st2.pop();
 			}
+			st2.push(pair<int, int>(j, a));
 		}
 	}
 
-	for (auto itr = arr.begin();itr != arr.end();itr++){
-		pair<int, int> p = *itr;
-		cout << p.first << " " << p.second << endl;
+	vector<int> ans;
+	while(st2.size() > 0) {
+		ans.insert(ans.begin(), st2.top().second); st2.pop();
 	}
-
-	// 始点と終点のペアからそれぞれの水溜りの面積を求める
+	cout << sum << endl;
+	cout << ans.size();
+	for (int i = 0;i < ans.size(); i++){
+		cout << ' ';
+		cout << ans[i];
+	}
+	cout << endl;
 }
 
